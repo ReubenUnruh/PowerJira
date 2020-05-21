@@ -19,26 +19,26 @@ function Invoke-JiraGetDeployments {
 
         $gqlQuery = @'
 query DevDetailsDialog ($issueId: ID!) {
-	developmentInformation(issueId: $issueId){
-		details {
-			deploymentProviders {
-				deployments {
-					displayName
-					url
-					state
-					lastUpdated
-					pipelineId
-					pipelineDisplayName
-					pipelineUrl
-					environment {
-						id
-						type
-						displayName
-					}
-				}
-			}
-		}
-	}
+    developmentInformation(issueId: $issueId){
+        details {
+            deploymentProviders {
+                deployments {
+                    displayName
+                    url
+                    state
+                    lastUpdated
+                    pipelineId
+                    pipelineDisplayName
+                    pipelineUrl
+                    environment {
+                        id
+                        type
+                        displayName
+                    }
+                }
+            }
+        }
+    }
 }
 '@
 
@@ -51,9 +51,10 @@ query DevDetailsDialog ($issueId: ID!) {
         }
 
         $method = New-Object BodyRestMethod @($functionPath, $verb, $query, $body) 
-        $results += $method.Invoke($JiraContext)
+        $resultsData = $method.Invoke($JiraContext)
+        $results += $resultsData.data.developmentInformation.details.deploymentProviders.deployments
     }
     end {
-        $results.data.developmentInformation.details.deploymentProviders.deployments
+        $results
     }
 }
